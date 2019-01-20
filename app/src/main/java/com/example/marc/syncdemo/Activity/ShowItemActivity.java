@@ -48,7 +48,7 @@ public class ShowItemActivity extends AppCompatActivity{
 
     //获取信息数据
     private void initInfo(){
-        dbHelper = new MyDatabaseHelper(this,"List.db",null,2);
+        dbHelper = new MyDatabaseHelper(this,"List.db",null,1);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("list",null,null,null,

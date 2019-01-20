@@ -16,7 +16,7 @@
         android:textSize="30sp"
         android:textStyle="bold"
         android:layout_marginBottom="10sp"
-        android:text="通讯录" />
+        android:text="数据同步-原型" />
 
     <Button
         android:id="@+id/button_create"
@@ -44,6 +44,41 @@
         style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="更新数据库"
+        android:text="更新数据库（版本更新）"
         android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/button_delete"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="还原数据库(慎重）"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom">
+
+        <TextView
+            android:id="@+id/txt_database"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:text="DataBase v1.0" />
+
+        <TextView
+            android:id="@+id/txt_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_database"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20px"
+            android:text="版本号Build v0.1.4"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="15sp" />
+    </RelativeLayout>
 </LinearLayout>

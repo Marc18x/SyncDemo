@@ -41,4 +41,13 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Toast.makeText(mContext,"更新数据库",Toast.LENGTH_SHORT).show();
 
     }
+
+    public void recoveryData(SQLiteDatabase db)
+    {
+        //还原数据库
+        db.execSQL("drop table if exists list");
+        db.execSQL(CREATE_TABLE);
+        Toast.makeText(mContext,"还原数据库成功",Toast.LENGTH_SHORT).show();
+
+    }
 }

@@ -16,7 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.ShowItemActivity"></activity>
+        <activity android:name=".Activity.ShowItemActivity"
+            android:label="通讯录"/>
+        <activity android:name=".Activity.AddInfoActivity"></activity>
     </application>
 
 </manifest>

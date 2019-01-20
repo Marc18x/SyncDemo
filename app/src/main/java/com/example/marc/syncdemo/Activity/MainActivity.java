@@ -32,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.button_show)
     Button button_show;
 
+    @BindView(R.id.button_delete)
+    Button button_delete;
+
     private MyDatabaseHelper dbHelper;
 
     @Override
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         //初始化绑定ButterKinife
         ButterKnife.bind(this);
         //版本号确定数据库迭代
-                dbHelper = new MyDatabaseHelper(this,"List.db",null,2);
+        dbHelper = new MyDatabaseHelper(this,"List.db",null,1);
 
         //创建数据库
         button_create.setOnClickListener(new View.OnClickListener() {
@@ -55,15 +58,12 @@ public class MainActivity extends AppCompatActivity {
         button_insert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                //开始组装第一条数据
-                values.put("name","Jack");
-                values.put("phone","11111111111");
-                values.put("status",0);
-                db.insert("list",null,values);
-                values.clear();
-                Toast.makeText(getApplicationContext(),"导入数据成功",Toast.LENGTH_SHORT).show();
+
+                //跳转到插入数据页面
+                Intent intent = new Intent(MainActivity.this,AddInfoActivity.class);
+                startActivity(intent);
+
+
 
             }
         });
@@ -83,6 +83,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dbHelper.getWritableDatabase();
+            }
+        });
+
+        //还原数据库
+        button_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                dbHelper.recoveryData(db);
             }
         });
     }
