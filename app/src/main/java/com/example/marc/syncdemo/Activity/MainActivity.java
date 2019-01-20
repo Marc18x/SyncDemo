@@ -1,6 +1,7 @@
 package com.example.marc.syncdemo.Activity;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,8 +26,11 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.button_insert)
     Button button_insert;
 
-    @BindView(R.id.button_select)
-    Button button_select;
+    @BindView(R.id.button_update)
+    Button button_update;
+
+    @BindView(R.id.button_show)
+    Button button_show;
 
     private MyDatabaseHelper dbHelper;
 
@@ -37,8 +41,9 @@ public class MainActivity extends AppCompatActivity {
         //初始化绑定ButterKinife
         ButterKnife.bind(this);
         //版本号确定数据库迭代
-        dbHelper = new MyDatabaseHelper(this,"List2.db",null,3);
+                dbHelper = new MyDatabaseHelper(this,"List.db",null,2);
 
+        //创建数据库
         button_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //模拟写入数据
         button_insert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,14 +61,25 @@ public class MainActivity extends AppCompatActivity {
                 values.put("name","Jack");
                 values.put("phone","11111111111");
                 values.put("status",0);
-                db.insert("list2",null,values);
+                db.insert("list",null,values);
                 values.clear();
                 Toast.makeText(getApplicationContext(),"导入数据成功",Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        button_select.setOnClickListener(new View.OnClickListener() {
+        //显示所有数据
+        button_show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //跳转到页面显示所有数据
+                Intent intent = new Intent(MainActivity.this,ShowItemActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //更新数据库
+        button_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dbHelper.getWritableDatabase();

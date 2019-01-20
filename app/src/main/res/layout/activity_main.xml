@@ -33,7 +33,14 @@
         android:text="插入" />
 
     <Button
-        android:id="@+id/button_select"
+        android:id="@+id/button_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="显示数据"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/button_update"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
