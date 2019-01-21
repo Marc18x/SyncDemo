@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SyncDemo</string>
+    <string name="app_version">v0.1.6</string>
+    <string name="database_version">v1.0</string>
 </resources>

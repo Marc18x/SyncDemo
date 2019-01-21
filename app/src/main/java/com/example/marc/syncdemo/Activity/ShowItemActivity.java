@@ -7,10 +7,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -50,33 +52,10 @@ public class ShowItemActivity extends AppCompatActivity{
 
         initInfo(); //获取信息数据
 
-        InfoAdapter adapter = new InfoAdapter(ShowItemActivity.this,
+        final InfoAdapter adapter = new InfoAdapter(ShowItemActivity.this,
                 R.layout.adapter_item,infoList);
+
         lv_info.setAdapter(adapter);
-
-    }
-
-    //获取信息数据
-    private void initInfo(){
-        dbHelper = new MyDatabaseHelper(this,"List.db",null,1);
-
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor = db.query("list",null,null,null,
-                null,null,null);
-
-        if(cursor.moveToFirst()){
-            do{
-                Integer id = cursor.getInt(cursor.getColumnIndex("id"));
-                String name = cursor.getString(cursor.getColumnIndex("name"));
-                String phone = cursor.getString(cursor.getColumnIndex("phone"));
-                Integer state = cursor.getInt(cursor.getColumnIndex("status"));
-                Timestamp anchor = change(cursor.getString(cursor.getColumnIndex("anchor")));
-                Info info = new Info(id,name,phone,state,anchor);
-                infoList.add(info);
-            }while (cursor.moveToNext());
-
-        }
-        cursor.close();
 
         // step 1. create a MenuCreator
         SwipeMenuCreator creator = new SwipeMenuCreator()
@@ -115,20 +94,6 @@ public class ShowItemActivity extends AppCompatActivity{
                 // add to menu
                 menu.addMenuItem(deleteItem);
 
-//                // create "delete" item
-//                SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
-//                // set item background
-//                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9, 0x3F, 0x25)));
-//                // set item width
-//                deleteItem.setWidth(dp2px(90));
-//                // set item title
-//                deleteItem.setTitle("删除");
-//                // set item title fontsize
-//                openItem.setTitleSize(18);
-//                // set item title font color
-//                openItem.setTitleColor(Color.BLACK);
-//                // add to menu
-//                menu.addMenuItem(deleteItem);
             }
         };
 
@@ -152,8 +117,8 @@ public class ShowItemActivity extends AppCompatActivity{
                     case 1:
                         // delete
                         delete(info);
-//                        data.remove(position);
-//                        adapter.notifyDataSetChanged();
+                        infoList.remove(position);
+                        adapter.notifyDataSetChanged();
                         break;
                 }
                 return false;
@@ -171,6 +136,29 @@ public class ShowItemActivity extends AppCompatActivity{
             }
         });
 
+    }
+
+    //获取信息数据
+    private void initInfo(){
+        dbHelper = new MyDatabaseHelper(this,"List.db",null,1);
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = db.query("list",null,null,null,
+                null,null,null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Integer id = cursor.getInt(cursor.getColumnIndex("id"));
+                String name = cursor.getString(cursor.getColumnIndex("name"));
+                String phone = cursor.getString(cursor.getColumnIndex("phone"));
+                Integer state = cursor.getInt(cursor.getColumnIndex("status"));
+                Timestamp anchor = change(cursor.getString(cursor.getColumnIndex("anchor")));
+                Info info = new Info(id,name,phone,state,anchor);
+                infoList.add(info);
+            }while (cursor.moveToNext());
+
+        }
+        cursor.close();
     }
 
 
@@ -193,7 +181,7 @@ public class ShowItemActivity extends AppCompatActivity{
      */
     private void open(Info info)
     {
-
+        Toast.makeText(getApplicationContext(),"未完成的功能",Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -202,6 +190,9 @@ public class ShowItemActivity extends AppCompatActivity{
      */
     private void delete(Info info)
     {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete("list","id = ? ",new String[ ]{info.getId()+""});
+        Toast.makeText(getApplicationContext(),"删除数据成功",Toast.LENGTH_SHORT).show();
 
     }
 }
