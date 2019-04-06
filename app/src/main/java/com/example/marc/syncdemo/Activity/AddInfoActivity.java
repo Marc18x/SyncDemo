@@ -31,8 +31,6 @@ public class AddInfoActivity extends AppCompatActivity {
 
     private MyDatabaseHelper dbHelper;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
