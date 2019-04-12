@@ -1,9 +1,13 @@
 package com.example.marc.syncdemo.Model;
 
+import org.litepal.crud.LitePalSupport;
+import org.litepal.exceptions.DataSupportException;
+
 import java.sql.Timestamp;
 
-public class Info {
+public class Info extends LitePalSupport {
     private int id;
+    private String tid;
     private String name;
     private String phone;
     private int state;
@@ -14,9 +18,10 @@ public class Info {
 
     }
 
-    public Info(int id,String name,String phone,int state,Timestamp anchor)
+    public Info(int id,String tid,String name,String phone,int state,Timestamp anchor)
     {
         this.id = id;
+        this.tid = tid;
         this.name = name;
         this.phone = phone;
         this.state = state;
@@ -60,5 +65,13 @@ public class Info {
 
     public void setAnchor(Timestamp anchor) {
         this.anchor = anchor;
+    }
+
+    public String getTid() {
+        return tid;
+    }
+
+    public void setTid(String tid) {
+        this.tid = tid;
     }
 }

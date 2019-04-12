@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.marc.syncdemo.Database.MyDatabaseHelper;
 import com.example.marc.syncdemo.R;
+import com.example.marc.syncdemo.Tools.TimeID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +40,8 @@ public class AddInfoActivity extends AppCompatActivity {
         //初始化绑定ButterKinife
         ButterKnife.bind(this);
 
+        final TimeID timeID = new TimeID();
+
         dbHelper = new MyDatabaseHelper(this,"List.db",null,1);
 
         add_cannel.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +65,8 @@ public class AddInfoActivity extends AppCompatActivity {
                 values.put("phone",et_phone.getText().toString());
                 //新增数据 状态默认为0
                 values.put("status",0);
+                //时间tid标识
+                values.put("tid",timeID.generateId());
                 //执行插入操作
                 db.insert("list",null,values);
                 //清除数据

@@ -149,11 +149,12 @@ public class ShowItemActivity extends AppCompatActivity{
         if(cursor.moveToFirst()){
             do{
                 Integer id = cursor.getInt(cursor.getColumnIndex("id"));
+                String tid = cursor.getString(cursor.getColumnIndex("tid"));
                 String name = cursor.getString(cursor.getColumnIndex("name"));
                 String phone = cursor.getString(cursor.getColumnIndex("phone"));
                 Integer state = cursor.getInt(cursor.getColumnIndex("status"));
                 Timestamp anchor = change(cursor.getString(cursor.getColumnIndex("anchor")));
-                Info info = new Info(id,name,phone,state,anchor);
+                Info info = new Info(id,tid,name,phone,state,anchor);
                 infoList.add(info);
             }while (cursor.moveToNext());
 

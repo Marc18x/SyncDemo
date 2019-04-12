@@ -3,12 +3,14 @@
     package="com.example.marc.syncdemo">
 
     <application
+        android:name="org.litepal.LitePalApplication"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Activity.UpdateInfoActivity"></activity>
         <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,9 +18,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.ShowItemActivity"
-            android:label="通讯录"/>
-        <activity android:name=".Activity.AddInfoActivity"></activity>
+        <activity
+            android:name=".Activity.ShowItemActivity"
+            android:label="通讯录" />
+        <activity android:name=".Activity.AddInfoActivity" />
     </application>
 
 </manifest>

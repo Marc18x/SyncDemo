@@ -9,6 +9,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATE_TABLE = "create table list ("
             + "[id] integer primary key autoincrement,"
+            + "[tid] varchar(14) not null,"
             + "[name] varchar(20) not null,"
             + "[phone] varchar(11) not null,"
             + "[status] interger(1) not null DEFAULT(0),"
