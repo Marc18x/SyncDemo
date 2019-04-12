@@ -49,6 +49,7 @@ public class AddInfoActivity extends AppCompatActivity {
         });
 
         //向数据库中添加新的数据
+        //测试数据
         add_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
