@@ -11,14 +11,14 @@ public class Info extends LitePalSupport {
     private String name;
     private String phone;
     private int state;
-    private Timestamp anchor;
+    private String anchor;
 
 
     public Info(){
 
     }
 
-    public Info(int id,String tid,String name,String phone,int state,Timestamp anchor)
+    public Info(int id,String tid,String name,String phone,int state,String anchor)
     {
         this.id = id;
         this.tid = tid;
@@ -59,11 +59,11 @@ public class Info extends LitePalSupport {
         this.state = state;
     }
 
-    public Timestamp getAnchor() {
+    public String getAnchor() {
         return anchor;
     }
 
-    public void setAnchor(Timestamp anchor) {
+    public void setAnchor(String anchor) {
         this.anchor = anchor;
     }
 

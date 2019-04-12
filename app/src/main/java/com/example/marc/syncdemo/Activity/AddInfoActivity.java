@@ -4,14 +4,20 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.marc.syncdemo.Database.MyDatabaseHelper;
+import com.example.marc.syncdemo.Model.Info;
 import com.example.marc.syncdemo.R;
 import com.example.marc.syncdemo.Tools.TimeID;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,11 +48,11 @@ public class AddInfoActivity extends AppCompatActivity {
 
         final TimeID timeID = new TimeID();
 
-        dbHelper = new MyDatabaseHelper(this,"List.db",null,1);
 
         add_cannel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //取消添加，返回上一级界面
                 finish();
             }
         });
@@ -58,19 +64,20 @@ public class AddInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                ContentValues values = new ContentValues();
+                Info info = new Info();
                 //获取用户填写的数据
-                values.put("name",et_name.getText().toString());
-                values.put("phone",et_phone.getText().toString());
+                info.setName(et_name.getText().toString());
+                info.setPhone(et_phone.getText().toString());
                 //新增数据 状态默认为0
-                values.put("status",0);
+                info.setState(0);
                 //时间tid标识
-                values.put("tid",timeID.generateId());
+                info.setTid(timeID.generateId());
+                //时间戳
+                info.setAnchor(new Timestamp(System.currentTimeMillis()).toString());
+                Log.d("timestamp",new Timestamp(System.currentTimeMillis()).toString());
                 //执行插入操作
-                db.insert("list",null,values);
-                //清除数据
-                values.clear();
+                info.save();
+
                 Toast.makeText(getApplicationContext(),"添加数据成功",Toast.LENGTH_SHORT).show();
 
                 et_name.setText("");

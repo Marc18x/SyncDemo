@@ -45,7 +45,7 @@ public class InfoAdapter extends ArrayAdapter<Info> {
         viewHolder.tv_name.setText(info.getName());
         viewHolder.tv_phone.setText(info.getPhone());
         viewHolder.tv_state.setText("(状态："+info.getState()+")");
-        viewHolder.tv_anchor.setText(info.getAnchor().toString());
+        viewHolder.tv_anchor.setText(info.getAnchor());
         return view;
     }
 

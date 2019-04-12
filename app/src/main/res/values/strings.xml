@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">SyncDemo</string>
-    <string name="app_version">v0.1.6</string>
-    <string name="database_version">v1.0</string>
+    <string name="app_version">开发版本 v0.2.1</string>
+    <string name="database_version">数据库版本v2.0(LitePal)</string>
 </resources>

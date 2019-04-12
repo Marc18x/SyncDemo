@@ -24,6 +24,9 @@ import com.example.marc.syncdemo.Database.MyDatabaseHelper;
 import com.example.marc.syncdemo.Model.Info;
 import com.example.marc.syncdemo.R;
 
+import org.litepal.LitePal;
+import org.litepal.crud.LitePalSupport;
+
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -37,7 +40,7 @@ import butterknife.ButterKnife;
 public class ShowItemActivity extends AppCompatActivity{
 
     private List<Info> infoList = new ArrayList<>();
-    private MyDatabaseHelper dbHelper;
+
 
     @BindView(R.id.lv_info)
     SwipeMenuListView lv_info;
@@ -140,26 +143,10 @@ public class ShowItemActivity extends AppCompatActivity{
 
     //获取信息数据
     private void initInfo(){
-        dbHelper = new MyDatabaseHelper(this,"List.db",null,1);
 
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor = db.query("list",null,null,null,
-                null,null,null);
+         infoList = LitePal.findAll(Info.class);
 
-        if(cursor.moveToFirst()){
-            do{
-                Integer id = cursor.getInt(cursor.getColumnIndex("id"));
-                String tid = cursor.getString(cursor.getColumnIndex("tid"));
-                String name = cursor.getString(cursor.getColumnIndex("name"));
-                String phone = cursor.getString(cursor.getColumnIndex("phone"));
-                Integer state = cursor.getInt(cursor.getColumnIndex("status"));
-                Timestamp anchor = change(cursor.getString(cursor.getColumnIndex("anchor")));
-                Info info = new Info(id,tid,name,phone,state,anchor);
-                infoList.add(info);
-            }while (cursor.moveToNext());
 
-        }
-        cursor.close();
     }
 
 
@@ -191,8 +178,7 @@ public class ShowItemActivity extends AppCompatActivity{
      */
     private void delete(Info info)
     {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete("list","id = ? ",new String[ ]{info.getId()+""});
+        //删除
         Toast.makeText(getApplicationContext(),"删除数据成功",Toast.LENGTH_SHORT).show();
 
     }

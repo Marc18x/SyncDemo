@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.example.marc.syncdemo.Database.MyDatabaseHelper;
 import com.example.marc.syncdemo.R;
 
+import org.litepal.tablemanager.Connector;
+
 import java.sql.Timestamp;
 
 import butterknife.BindView;
@@ -43,14 +45,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //初始化绑定ButterKinife
         ButterKnife.bind(this);
-        //版本号确定数据库迭代
-        dbHelper = new MyDatabaseHelper(this,"List.db",null,1);
+
 
         //创建数据库
         button_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper.getWritableDatabase();
+                //自动创建数据库
+                Connector.getDatabase();
+                Toast.makeText(getApplicationContext(),"LitePal数据库创建成功",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -82,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
         button_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper.getWritableDatabase();
+               //更新数据库操作----当前version版本号高于本地已存版本号时自动调用更新数据库
+                //执行更新操作的同事，覆盖原有的数据， 不用担心数据丢失的问题
+                Connector.getDatabase();
             }
         });
 
@@ -90,8 +95,7 @@ public class MainActivity extends AppCompatActivity {
         button_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                dbHelper.recoveryData(db);
+               //删除数据库
             }
         });
     }
