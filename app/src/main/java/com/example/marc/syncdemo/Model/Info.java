@@ -3,9 +3,10 @@ package com.example.marc.syncdemo.Model;
 import org.litepal.crud.LitePalSupport;
 import org.litepal.exceptions.DataSupportException;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Info extends LitePalSupport {
+public class Info extends LitePalSupport implements Serializable {
     private int id;
     private String tid;
     private String name;

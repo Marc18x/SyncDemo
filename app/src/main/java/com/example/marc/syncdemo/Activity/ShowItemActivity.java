@@ -1,6 +1,7 @@
 package com.example.marc.syncdemo.Activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -9,18 +10,20 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.swipemenulistview.BaseSwipListAdapter;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.baoyz.swipemenulistview.SwipeMenuListView.OnMenuItemClickListener;
-import com.example.marc.syncdemo.Adapter.InfoAdapter;
-import com.example.marc.syncdemo.Database.MyDatabaseHelper;
 import com.example.marc.syncdemo.Model.Info;
 import com.example.marc.syncdemo.R;
 
@@ -40,6 +43,7 @@ import butterknife.ButterKnife;
 public class ShowItemActivity extends AppCompatActivity{
 
     private List<Info> infoList = new ArrayList<>();
+    private InfoAdapter adapter;
 
 
     @BindView(R.id.lv_info)
@@ -55,8 +59,7 @@ public class ShowItemActivity extends AppCompatActivity{
 
         initInfo(); //获取信息数据
 
-        final InfoAdapter adapter = new InfoAdapter(ShowItemActivity.this,
-                R.layout.adapter_item,infoList);
+        adapter = new InfoAdapter();
 
         lv_info.setAdapter(adapter);
 
@@ -120,8 +123,12 @@ public class ShowItemActivity extends AppCompatActivity{
                     case 1:
                         // delete
                         delete(info);
+
+                        //从List中移除对应项目
                         infoList.remove(position);
+                        //强制刷新
                         adapter.notifyDataSetChanged();
+
                         break;
                 }
                 return false;
@@ -149,6 +156,25 @@ public class ShowItemActivity extends AppCompatActivity{
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode,int resultCode,Intent data)
+    {
+        switch (resultCode){
+            case 0x901:
+                //从更新数据页面返回而来
+                //获取list
+                initInfo();
+                //强制页面刷新
+                adapter.notifyDataSetChanged();
+                Toast.makeText(getApplicationContext(),"修改数据成功",Toast.LENGTH_SHORT).show();
+                break;
+            default:
+
+        }
+
+
+    }
+
 
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
@@ -169,7 +195,14 @@ public class ShowItemActivity extends AppCompatActivity{
      */
     private void open(Info info)
     {
-        Toast.makeText(getApplicationContext(),"未完成的功能",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"更新数据",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(ShowItemActivity.this,UpdateInfoActivity.class);
+        //传递更新的值
+        intent.putExtra("updateInfo",info);
+        //页面跳转
+        startActivityForResult(intent,0x901);
+
+
     }
 
     /**
@@ -179,7 +212,93 @@ public class ShowItemActivity extends AppCompatActivity{
     private void delete(Info info)
     {
         //删除
+
+        Info deleteInfo = new Info();
+        deleteInfo.setState(-1);
+        //时间戳
+        deleteInfo.setAnchor(new Timestamp(System.currentTimeMillis()).toString());
+        //提交执行
+        deleteInfo.updateAll("tid=?",info.getTid());
+
         Toast.makeText(getApplicationContext(),"删除数据成功",Toast.LENGTH_SHORT).show();
 
     }
+
+    class InfoAdapter extends BaseSwipListAdapter {
+
+
+
+        @Override
+        public int getCount() {
+            return infoList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return infoList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position , View convertView , ViewGroup parent)
+        {
+
+
+            if(convertView == null){
+                convertView = View.inflate(getApplicationContext(),
+                        R.layout.adapter_item,null);
+                new ViewHolder(convertView);
+            }
+
+            ViewHolder viewHolder = (ViewHolder) convertView.getTag();
+
+            Info info =(Info) getItem(position);
+
+            viewHolder.tv_id.setText(info.getId()+"");
+            viewHolder.tv_tid.setText(info.getTid()+"");
+            viewHolder.tv_name.setText(info.getName());
+            viewHolder.tv_phone.setText(info.getPhone());
+            viewHolder.tv_state.setText("(状态："+info.getState()+")");
+            viewHolder.tv_anchor.setText(info.getAnchor());
+            return convertView;
+        }
+
+
+         class ViewHolder{
+
+            @BindView(R.id.tv_id)
+            TextView tv_id;
+
+            @BindView(R.id.tv_tid)
+            TextView tv_tid;
+
+            @BindView(R.id.tv_name)
+            TextView tv_name;
+
+            @BindView(R.id.tv_phone)
+            TextView tv_phone;
+
+            @BindView(R.id.tv_state)
+            TextView tv_state;
+
+            @BindView(R.id.tv_anchor)
+            TextView tv_anchor;
+
+            //初始化绑定ButterKinife
+            public ViewHolder(View view) {
+                ButterKnife.bind(this, view);
+                view.setTag(this);
+            }
+
+        }
+
+    }
+
+
+
+
 }

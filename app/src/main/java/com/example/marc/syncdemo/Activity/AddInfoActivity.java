@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.marc.syncdemo.Database.MyDatabaseHelper;
 import com.example.marc.syncdemo.Model.Info;
 import com.example.marc.syncdemo.R;
 import com.example.marc.syncdemo.Tools.TimeID;
@@ -36,7 +35,6 @@ public class AddInfoActivity extends AppCompatActivity {
     @BindView(R.id.add_cancel)
     Button add_cannel;
 
-    private MyDatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
