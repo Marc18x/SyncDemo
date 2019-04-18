@@ -11,15 +11,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.marc.syncdemo.API.API_SUBMITINFO;
+import com.example.marc.syncdemo.API.URL.URL;
 import com.example.marc.syncdemo.Model.Info;
 import com.example.marc.syncdemo.R;
 import com.example.marc.syncdemo.Tools.TimeID;
 
+import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddInfoActivity extends AppCompatActivity {
 
@@ -44,6 +57,19 @@ public class AddInfoActivity extends AppCompatActivity {
         //初始化绑定ButterKinife
         ButterKnife.bind(this);
 
+        //OkHttpClient初始化
+        OkHttpClient okHttpClient = new OkHttpClient();
+
+        //Retrofit初始化
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(URL.SERVICE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+
+        //创建网络请求接口的实例 mApi
+        final API_SUBMITINFO mApi = retrofit.create(API_SUBMITINFO.class);
+
         final TimeID timeID = new TimeID();
 
 
@@ -63,6 +89,8 @@ public class AddInfoActivity extends AppCompatActivity {
 
 
                 Info info = new Info();
+                //infoList初始化
+                List<Info> infoList = new ArrayList<Info>();
                 //获取用户填写的数据
                 info.setName(et_name.getText().toString());
                 info.setPhone(et_phone.getText().toString());
@@ -76,7 +104,35 @@ public class AddInfoActivity extends AppCompatActivity {
                 //执行插入操作
                 info.save();
 
-                Toast.makeText(getApplicationContext(),"添加数据成功",Toast.LENGTH_SHORT).show();
+                infoList.add(info);
+
+                //对发送请求进行封装
+                Call<ResponseBody> result = mApi.addInfo("application/json",infoList);
+                //发送网络请求（异步）
+                result.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Toast.makeText(getApplicationContext(),"suceess",Toast.LENGTH_SHORT).show();
+                        try {
+                            String responseData = response.body().string();
+                            Log.d("result",responseData);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_SHORT).show();
+                        Log.d("result",t.toString());
+                    }
+
+                });
+
+
+
+
 
                 et_name.setText("");
                 et_name.clearFocus();
