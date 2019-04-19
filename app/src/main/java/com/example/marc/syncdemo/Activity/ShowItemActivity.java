@@ -151,8 +151,9 @@ public class ShowItemActivity extends AppCompatActivity{
     //获取信息数据
     private void initInfo(){
 
-         infoList = LitePal.findAll(Info.class);
-
+        //过滤已经删除的信息
+         infoList = LitePal.where("state>?","-1")
+                 .find(Info.class);
 
     }
 

@@ -1,26 +1,55 @@
 package com.example.marc.syncdemo.Activity;
 
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.marc.syncdemo.Database.MyDatabaseHelper;
-import com.example.marc.syncdemo.R;
 
+import com.dialogloadding.WeiboDialogUtils;
+import com.example.marc.syncdemo.API.API_SYNCINFO;
+import com.example.marc.syncdemo.API.URL.URL;
+import com.example.marc.syncdemo.Database.MyDatabaseHelper;
+import com.example.marc.syncdemo.Model.Info;
+import com.example.marc.syncdemo.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.litepal.LitePal;
 import org.litepal.tablemanager.Connector;
 
+import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static org.litepal.LitePalApplication.getContext;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    private List<Info> infoList = new ArrayList<>();
+    private List<Info> infoList_response = new ArrayList<>();
+
+    private Dialog mWeiboDialog;
 
     @BindView(R.id.button_create)
     Button button_create;
@@ -37,7 +66,21 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.button_delete)
     Button button_delete;
 
-    private MyDatabaseHelper dbHelper;
+    @BindView(R.id.button_submit)
+    Button button_submit;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    //关闭loading图
+                    WeiboDialogUtils.closeDialog(mWeiboDialog);
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +88,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //初始化绑定ButterKinife
         ButterKnife.bind(this);
+
+        //OkHttpClient初始化
+        OkHttpClient okHttpClient = new OkHttpClient();
+
+        //Retrofit初始化
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(URL.SERVICE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+
+        //创建网络请求接口的实例 mApi
+        final API_SYNCINFO mApi = retrofit.create(API_SYNCINFO.class);
 
 
         //创建数据库
@@ -96,6 +152,54 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                //删除数据库
+            }
+        });
+
+        //同步数据库
+        button_submit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                //获取所有数据
+                infoList = LitePal.findAll(Info.class);
+                //对发送请求进行封装
+                Call<ResponseBody> result = mApi.addInfo("application/json",infoList);
+                mWeiboDialog = WeiboDialogUtils.createLoadingDialog(MainActivity.this, "加载中...");
+                //发送网络请求（异步）
+                result.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Toast.makeText(getApplicationContext(),"suceess",Toast.LENGTH_SHORT).show();
+                        try {
+                            String responseData = response.body().string();
+
+                            Gson gson = new Gson();
+
+                            //实现类型转换 将responseData转换成infoList  ---Token后接解析对象，此处为List<Info>
+                            infoList_response = gson.fromJson(responseData,new TypeToken<List<Info>>(){}.getType());
+
+                            LitePal.deleteAll(Info.class);
+
+                            //存入新数据
+                            LitePal.saveAll(infoList_response);
+
+                            Log.d("result",responseData);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_SHORT).show();
+                        Log.d("result",t.toString());
+                    }
+
+                });
+                mHandler.sendEmptyMessageDelayed(1, 2000);
+
+
             }
         });
     }
