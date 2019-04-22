@@ -152,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                //删除数据库
+                LitePal.deleteAll(Info.class);
+                Toast.makeText(getApplicationContext(),"还原数据库成功",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -169,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 result.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        Toast.makeText(getApplicationContext(),"suceess",Toast.LENGTH_SHORT).show();
+
                         try {
                             String responseData = response.body().string();
 
@@ -188,18 +190,18 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
+                        Toast.makeText(getApplicationContext(),"suceess",Toast.LENGTH_SHORT).show();
+                        //关闭加载动画
+                        WeiboDialogUtils.closeDialog(mWeiboDialog);
                     }
-
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_SHORT).show();
                         Log.d("result",t.toString());
+                        WeiboDialogUtils.closeDialog(mWeiboDialog);
                     }
 
                 });
-                mHandler.sendEmptyMessageDelayed(1, 2000);
-
-
             }
         });
     }
